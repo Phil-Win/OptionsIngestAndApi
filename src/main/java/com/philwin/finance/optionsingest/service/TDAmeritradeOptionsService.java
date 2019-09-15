@@ -1,5 +1,6 @@
 package com.philwin.finance.optionsingest.service;
 
+import com.philwin.finance.optionsingest.model.iOption;
 import com.philwin.finance.optionsingest.util.Constants;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -7,6 +8,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -33,17 +35,5 @@ public class TDAmeritradeOptionsService implements iAPIBroker{
 
         return restTemplate.getForObject(uriComponentsBuilder.toUriString(), String.class);
     }
-
-    @Override
-    public String getHTTPVerb() {
-        return "GET";
-    }
-
-    @Override
-    public String getEndpoint() {
-        return this.resourceUrl;
-    }
-
-
 
 }
