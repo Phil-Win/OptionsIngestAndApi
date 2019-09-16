@@ -3,11 +3,13 @@ package com.philwin.finance.optionsingest.controller;
 
 import com.philwin.finance.optionsingest.exception.MissingParameterException;
 import com.philwin.finance.optionsingest.service.TDAmeritradeOptionsService;
+import com.philwin.finance.optionsingest.util.PropertiesUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
+import org.springframework.core.io.support.PropertiesLoaderUtils;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -30,68 +32,29 @@ public class TDAmeritradeOptionsDownloadController {
 
     private final String    SYMBOL_VARIABLE_PREFIX="tdameritrade.options.downloader.symbol.";
     private final String    STRIKE_COUNT_VARIABLE_PREFIX="tdameritrade.options.downloader.strikecount.";
-    private final String    KEY =   "key";
-    private String      SYMBOL_VARIABLE;
-    private String      STRIKE_COUNT_VARIABLE;
-
-
     private List<HashMap<String, String>> setOfParametersToRun;
 
     @PostConstruct
     public void init() {
-        try {
-            this.setOfParametersToRun = new ArrayList<HashMap<String, String>>();
-
-            loadKeys();
-
-            int counter = 1;
-            this.setOfParametersToRun = new ArrayList<HashMap<String, String>>();
-            while (env.getProperty(SYMBOL_VARIABLE_PREFIX + counter) != null) {
-                setOfParametersToRun.add(getParametersFromIndex(counter));
-                counter++;
-            }
-        }catch (MissingParameterException e) {
-            //TODO: Catch it better
-            e.printStackTrace();
-        }
+        List<String> parameterPrefixesToProcess    =   new ArrayList<String>();
+        PropertiesUtil  propertiesUtil  =   new PropertiesUtil();
+        parameterPrefixesToProcess.add(SYMBOL_VARIABLE_PREFIX);
+        parameterPrefixesToProcess.add(STRIKE_COUNT_VARIABLE_PREFIX);
+        setOfParametersToRun    = propertiesUtil.getListOfParameterSets(parameterPrefixesToProcess, env);
     }
 
     @Scheduled(fixedDelay = 100000)
     public void downloadDataFromTdAmeritradeOptionsApi() {
-        log.info("Hello world! " + System.currentTimeMillis() / 1000);
-        log.info("Printing the query keys " + this.SYMBOL_VARIABLE + " and the strike: " + this.STRIKE_COUNT_VARIABLE);
+        log.info("Hello world From the TD Application " + System.currentTimeMillis() / 1000);
         for (HashMap<String, String> parameterSet: setOfParametersToRun) {
+            StringBuilder logToPrint    =   new StringBuilder();
+            logToPrint.append("Running the job with the parameters... ");
+            for (Map.Entry<String, String> parameter : parameterSet.entrySet()) {
+                logToPrint.append(" ").append(parameter.getKey()).append(":").append(parameter.getValue()).append(" ");
+            }
+            log.info(logToPrint.toString());
             log.info(tdAmeritradeOptionsService.getData(parameterSet));
         }
     }
-
-    private HashMap<String, String> getParametersFromIndex(Integer index) throws MissingParameterException {
-        HashMap<String, String> returnMap   =   new HashMap<String, String>();
-        if (env.getProperty(SYMBOL_VARIABLE_PREFIX + index) == null || env.getProperty(STRIKE_COUNT_VARIABLE_PREFIX + index) == null) {
-            throw new MissingParameterException("Missing a Parameter for Index : " + index +
-                    " Symbol: " + env.getProperty(SYMBOL_VARIABLE_PREFIX + index) +
-                    " Strike Count: " + env.getProperty(STRIKE_COUNT_VARIABLE_PREFIX + index) );
-        }
-        returnMap.put(SYMBOL_VARIABLE, env.getProperty(SYMBOL_VARIABLE_PREFIX + index));
-        returnMap.put(STRIKE_COUNT_VARIABLE, env.getProperty(STRIKE_COUNT_VARIABLE_PREFIX + index));
-
-        log.info("Successfully loaded the properties for index: " + index );
-        for(Map.Entry<String, String> paramter : returnMap.entrySet()) {
-            log.info("Key:Val = " + paramter.getKey() + ":" + paramter.getValue());
-        }
-        return returnMap;
-    }
-
-    private void loadKeys() throws MissingParameterException{
-        this.SYMBOL_VARIABLE        =   env.getProperty(SYMBOL_VARIABLE_PREFIX          +   KEY);
-        this.STRIKE_COUNT_VARIABLE  =   env.getProperty(STRIKE_COUNT_VARIABLE_PREFIX    +   KEY);
-        if (this.SYMBOL_VARIABLE != null &&  this.STRIKE_COUNT_VARIABLE != null) {
-            log.info("Successfully loaded the Keys!");
-        } else {
-            throw new MissingParameterException("Failed to load the keys: SYMBOL_VARIABLE=" + this.SYMBOL_VARIABLE
-                    + " STRIKE_COUNT_VARIABLE=" + STRIKE_COUNT_VARIABLE);
-        }
-    }
-
 
 }
