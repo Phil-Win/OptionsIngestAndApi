@@ -1,6 +1,5 @@
 package com.philwin.finance.optionsingest.service;
 
-import com.philwin.finance.optionsingest.model.iOption;
 import com.philwin.finance.optionsingest.util.Constants;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

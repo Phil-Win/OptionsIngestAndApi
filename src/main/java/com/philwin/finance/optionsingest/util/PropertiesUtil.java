@@ -32,6 +32,20 @@ public class PropertiesUtil {
         return returnList;
     }
 
+    public List<String> getListOfProperties(String parameterPrefix, Environment env) throws MissingParameterException {
+        List<String> returnList =   new ArrayList<String>();
+        int counter =   1;
+        while (env.getProperty(parameterPrefix + counter) != null) {
+            returnList.add(env.getProperty(parameterPrefix + counter));
+            counter++;
+        }
+        if (returnList.size() == 0) {
+            throw new MissingParameterException("No properties with the prefix: " + parameterPrefix + " was found");
+        }
+
+        return returnList;
+    }
+
     private HashMap<String, String> getParametersFromIndex(List<String> listOfParameterPrefixes, Integer index, Environment env) throws MissingParameterException {
         HashMap<String, String> returnMap   =   new HashMap<String, String>();
         String parameterKey;
