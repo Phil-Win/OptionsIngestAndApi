@@ -1,8 +1,6 @@
-library "Phils-Private-Library@master"
-Properties properties   =   new Properties()
+node("docker_slave") {
+    stage("Setting up") {
+        checkout scm
 
-properties.put("owner", "himynameisfil")
-properties.put("project", "historical_options_ingestor")
-properties.put("version", "1.0.0")
-
-BuildSpringBootDocker(properties)
+    }
+}

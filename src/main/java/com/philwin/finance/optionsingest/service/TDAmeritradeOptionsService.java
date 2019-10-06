@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class TDAmeritradeOptionsService implements iAPIBroker{
+public class TDAmeritradeOptionsService {
     @Value("${tdameritrade.consumer.key}")
     private String consumerKey;
 
@@ -31,7 +31,6 @@ public class TDAmeritradeOptionsService implements iAPIBroker{
         for (Map.Entry<String, String> param : parameters.entrySet()) {
             uriComponentsBuilder.queryParam(param.getKey(), param.getValue());
         }
-
         return restTemplate.getForObject(uriComponentsBuilder.toUriString(), String.class);
     }
 
