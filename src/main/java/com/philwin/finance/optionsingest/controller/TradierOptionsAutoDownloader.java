@@ -25,7 +25,7 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
-//@Component
+@Component
 @Slf4j
 @PropertySource("classpath:application.properties")
 public class TradierOptionsAutoDownloader {
@@ -59,15 +59,15 @@ public class TradierOptionsAutoDownloader {
         TradierStockQuoteResponse   stockData;
         log.info("Processing Daily set of stock information from the Tradier Controller");
         if (tradierOptionsService.isMarketOpen()) {
+            stockData   =   tradierOptionsService.getStockQuotes(listOfStocks);
+            if (DataWriterUtil.storeData(stockData, historicalLandingZone + File.pathSeparatorChar + "all_stock_data_" + date)) {
+                log.info("Successfully stored stock data for {}", String.join(", ", listOfStocks));
+            }
             for (String stock : listOfStocks) {
                 optionsData = tradierOptionsService.getData(stock);
                 if (DataWriterUtil.storeData(optionsData, historicalLandingZone + File.pathSeparatorChar + stock + "_options_processed_on_" + date)) {
                     log.info("Successfully stored options data for {}", stock);
                 }
-            }
-            stockData   =   tradierOptionsService.getStockQuotes(listOfStocks);
-            if (DataWriterUtil.storeData(stockData, historicalLandingZone + File.pathSeparatorChar + "all_stock_data_" + date)) {
-                log.info("Successfully stored stock data for {}", String.join(", ", listOfStocks));
             }
         }
     }
