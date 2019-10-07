@@ -20,6 +20,8 @@ public class DataWriterUtil {
         try {
             log.info("Storing object in : {}", storageLocation);
             log.info("Processing the object: {}", mapper.writeValueAsString(dataObject));
+            File fileOfInterest =   new File(storageLocation);
+            fileOfInterest.getParentFile().mkdirs();
             writer   =   new BufferedWriter(new FileWriter(storageLocation));
             writer.write(mapper.writeValueAsString(dataObject));
             return true;

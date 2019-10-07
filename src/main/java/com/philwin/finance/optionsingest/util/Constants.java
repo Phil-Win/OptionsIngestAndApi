@@ -12,4 +12,9 @@ public class Constants {
     public static final String TRADIER_MARKET_OPEN                          =   "open";
     public static final String TRADIER_STOCK_QUOTE_URL                      =   "https://sandbox.tradier.com/v1/markets/quotes";
     public static final String TRADIER_SYMBOLS                              =   "symbols";
+    public static final String TRADIER_SYMBOL                               =   "symbol";
+    public static final String TRADIER_GREEKS                               =   "greeks";
+    public static final String TRADIER_GREEKS_VALUE                         =   "true";
+    public static final String TRADIER_EXPIRATION                           =   "expiration";
+
 }

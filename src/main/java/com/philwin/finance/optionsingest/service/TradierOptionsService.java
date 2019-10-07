@@ -24,16 +24,16 @@ import java.util.*;
 @Slf4j
 public class TradierOptionsService {
 
-    @Value("${tradier.options.symbol.key}")
+    @Value(Constants.TRADIER_SYMBOL)
     private String SYMBOL_VARIABLE_NAME;
 
-    @Value("${tradier.options.expiration.key}")
+    @Value(Constants.TRADIER_EXPIRATION)
     private String EXPIRATION_VARIABLE_NAME;
 
-    @Value("${tradier.options.greeks.key}")
+    @Value(Constants.TRADIER_GREEKS)
     private String GREEKS_VARIABLE_NAME;
 
-    @Value("${tradier.options.greeks.value}")
+    @Value(Constants.TRADIER_GREEKS_VALUE)
     private String GREEKS_VALUE;
 
     @Value(Constants.TRADIER_OPTIONS_EXPIRATIONS_API_RESOURCE_URL)
@@ -110,6 +110,7 @@ public class TradierOptionsService {
         UriComponentsBuilder uriComponentsBuilder    =   UriComponentsBuilder.fromUriString(stockQuoteUrl);
 
         uriComponentsBuilder.queryParam(Constants.TRADIER_SYMBOLS, String.join(",", listOfStocks));
+        log.info("Printing uri... {}", uriComponentsBuilder.toUriString());
         tradierStockQuoteResponse   =   (TradierStockQuoteResponse) makeTradierApiCallUntilComplete(uriComponentsBuilder.toUriString(), TradierStockQuoteResponse.class);
         Assert.notNull(tradierStockQuoteResponse, "Stock Quote response  cannot be null... throwing exception");
         return tradierStockQuoteResponse;
@@ -188,7 +189,7 @@ public class TradierOptionsService {
                 getHeaders(),
                 ClockResponse.class
         );
-
+        log.info("API call to Clock successful!");
         return response.getBody();
     }
 
@@ -200,6 +201,7 @@ public class TradierOptionsService {
                 getHeaders(),
                 TradierOptionsDateResponse.class
         );
+        log.info("API call to Options date");
         return response.getBody();
     }
 
@@ -211,6 +213,7 @@ public class TradierOptionsService {
                 getHeaders(),
                 TradierOptionsChainResponse.class
         );
+        log.info("API call to Options Chain!");
         return response.getBody();
     }
 
@@ -222,6 +225,7 @@ public class TradierOptionsService {
                 getHeaders(),
                 TradierStockQuoteResponse.class
         );
+        log.info("API call to Stock Quote!");
         return response.getBody();
     }
 

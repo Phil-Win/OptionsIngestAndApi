@@ -22,6 +22,9 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -35,6 +38,9 @@ public class TradierOptionsAutoDownloader {
     @Autowired
     private Environment env;
 
+    @Value("${tradier.stocks.symbols.to.download.comma.separated}")
+    private String commaSeparatedStockSymbols;
+
     @Value("${tradier.options.historical.landingzone}")
     private String historicalLandingZone;
 
@@ -44,29 +50,68 @@ public class TradierOptionsAutoDownloader {
 
     @PostConstruct
     public void init() {
-        PropertiesUtil  propertiesUtil  =   new PropertiesUtil();
-        try {
-            listOfStocks    = propertiesUtil.getListOfProperties(SYMBOL_VARIABLE_PREFIX, env);
-        } catch (MissingParameterException e) {
-            e.printStackTrace();
-        }
+//        PropertiesUtil  propertiesUtil  =   new PropertiesUtil();
+//        try {
+//            listOfStocks    = propertiesUtil.getListOfProperties(SYMBOL_VARIABLE_PREFIX, env);
+//        } catch (MissingParameterException e) {
+//            e.printStackTrace();
+//        }
+        listOfStocks    = Arrays.asList(commaSeparatedStockSymbols.split(","));
     }
 
-    @Scheduled(cron = "0 15 12 * * *")
-    public void downloadDataFromTdAmeritradeOptionsApi() {
+    @Scheduled(cron = "0 0 12 * * *")
+//    @Scheduled(fixedRate= 10000000)
+    public void downloadStockData() {
+        DateFormat dateFormat   =   new SimpleDateFormat("dd_MM_yyyy");
         Date date   =   new Date();
         List<TradierOptionsChainResponse> optionsData;
         TradierStockQuoteResponse   stockData;
         log.info("Processing Daily set of stock information from the Tradier Controller");
         if (tradierOptionsService.isMarketOpen()) {
+            log.info("Printing the list of stocks... {}", String.join(", ", listOfStocks));
             stockData   =   tradierOptionsService.getStockQuotes(listOfStocks);
-            if (DataWriterUtil.storeData(stockData, historicalLandingZone + File.pathSeparatorChar + "all_stock_data_" + date)) {
+            if (DataWriterUtil.storeData(stockData, historicalLandingZone + File.separator +
+                    dateFormat.format(date) + File.separator + "all_stock_data_" + dateFormat.format(date) + ".json")) {
                 log.info("Successfully stored stock data for {}", String.join(", ", listOfStocks));
+            } else {
+                log.info("Failed to store stock data");
             }
+//            for (String stock : listOfStocks) {
+//                optionsData = tradierOptionsService.getData(stock);
+//                if (DataWriterUtil.storeData(optionsData, historicalLandingZone + File.separator +
+//                        dateFormat.format(date) + File.separator + stock + "_options_processed_on_" + dateFormat.format(date) + ".json")) {
+//                    log.info("Successfully stored options data for {}", stock);
+//                } else {
+//                    log.info("Failed to store options data for {}", stock);
+//                }
+//            }
+        }
+    }
+
+    @Scheduled(cron = "0 15 12 * * *")
+//    @Scheduled(fixedRate= 10000000)
+    public void downloadOptionsData() {
+        DateFormat dateFormat   =   new SimpleDateFormat("dd_MM_yyyy");
+        Date date   =   new Date();
+        List<TradierOptionsChainResponse> optionsData;
+        TradierStockQuoteResponse   stockData;
+        log.info("Processing Daily set of Options information from the Tradier Controller");
+        if (tradierOptionsService.isMarketOpen()) {
+            log.info("Printing the list of stocks to process... {}", String.join(", ", listOfStocks));
+//            stockData   =   tradierOptionsService.getStockQuotes(listOfStocks);
+//            if (DataWriterUtil.storeData(stockData, historicalLandingZone + File.separator +
+//                    dateFormat.format(date) + File.separator + "all_stock_data_" + dateFormat.format(date) + ".json")) {
+//                log.info("Successfully stored stock data for {}", String.join(", ", listOfStocks));
+//            } else {
+//                log.info("Failed to store stock data");
+//            }
             for (String stock : listOfStocks) {
                 optionsData = tradierOptionsService.getData(stock);
-                if (DataWriterUtil.storeData(optionsData, historicalLandingZone + File.pathSeparatorChar + stock + "_options_processed_on_" + date)) {
+                if (DataWriterUtil.storeData(optionsData, historicalLandingZone + File.separator +
+                        dateFormat.format(date) + File.separator + stock + "_options_processed_on_" + dateFormat.format(date) + ".json")) {
                     log.info("Successfully stored options data for {}", stock);
+                } else {
+                    log.info("Failed to store options data for {}", stock);
                 }
             }
         }
