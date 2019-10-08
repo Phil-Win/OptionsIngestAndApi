@@ -12,7 +12,7 @@ node("docker_slave") {
     }
     stage ("Publish Docker Image") {
         withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-            sh "docker login -u ${USERNAME} -p ${PASSWORD}"
+            sh "docker login docker.io -u ${USERNAME} -p ${PASSWORD}"
             customImage.push()
             latestImage.push()
         }
