@@ -8,4 +8,8 @@ node("docker_slave") {
     stage("Create docker image") {
         docker.build "philwin/options-ingest-and-api" + ":${BUILD_NUMBER}"
     }
+    
+    stage("Publish Docker Image") {
+        docker.push "philwin/options-ingest-and-api"   
+    }
 }
