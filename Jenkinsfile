@@ -1,4 +1,4 @@
-node {
+node("docker_slave") {
     def app
     stage("Setting up") {
         checkout scm
