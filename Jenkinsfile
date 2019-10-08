@@ -5,11 +5,11 @@ node("docker_slave") {
         sh "./gradlew build"
     }
 
-    stage("Create docker image") {
-        docker.build "philwin/options-ingest-and-api" + ":${BUILD_NUMBER}"
+    stage("Create and Publish Docker image") {
+        def customImage = docker.build "philwin/options-ingest-and-api" + ":${BUILD_NUMBER}"
+        def latestImage = docker.build "philwin/options-ingest-and-api" + ":latest"
+        customImage.push()
+        latestImage.push()
     }
-    
-    stage("Publish Docker Image") {
-        docker.push "philwin/options-ingest-and-api"   
-    }
+   
 }
