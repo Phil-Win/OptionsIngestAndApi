@@ -7,8 +7,8 @@ node("docker_slave") {
         sh "./gradlew build"
     }
     stage("Create Docker image") {
-        customImage = docker.build "himynameisfil/options-ingest-and-api" + ":${BUILD_NUMBER}"
-        latestImage = docker.build "himynameisfil/options-ingest-and-api" + ":latest"
+        customImage = docker.build "philwin/options-ingest-and-api" + ":${BUILD_NUMBER}"
+        latestImage = docker.build "philwin/options-ingest-and-api" + ":latest"
     }
     stage ("Publish Docker Image") {
         customImage.push()
