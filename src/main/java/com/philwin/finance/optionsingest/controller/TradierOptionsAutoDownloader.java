@@ -30,7 +30,7 @@ import java.util.List;
 
 @Component
 @Slf4j
-@PropertySource("classpath:application.properties")
+//@PropertySource("classpath:application.properties")
 public class TradierOptionsAutoDownloader {
     @Autowired
     private TradierOptionsService tradierOptionsService;
