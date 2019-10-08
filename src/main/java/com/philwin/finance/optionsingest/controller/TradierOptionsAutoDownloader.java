@@ -59,7 +59,7 @@ public class TradierOptionsAutoDownloader {
         listOfStocks    = Arrays.asList(commaSeparatedStockSymbols.split(","));
     }
 
-    @Scheduled(cron = "0 0 12 * * *")
+    @Scheduled(cron = "0 0 17 * * *")
 //    @Scheduled(fixedRate= 10000000)
     public void downloadStockData() {
         DateFormat dateFormat   =   new SimpleDateFormat("dd_MM_yyyy");
@@ -88,7 +88,7 @@ public class TradierOptionsAutoDownloader {
         }
     }
 
-    @Scheduled(cron = "0 15 12 * * *")
+    @Scheduled(cron = "0 15 17 * * *")
 //    @Scheduled(fixedRate= 10000000)
     public void downloadOptionsData() {
         DateFormat dateFormat   =   new SimpleDateFormat("dd_MM_yyyy");
