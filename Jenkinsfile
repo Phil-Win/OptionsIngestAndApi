@@ -12,7 +12,7 @@ node("docker_slave") {
     }
     stage("Create Docker image") {
         def dateFormat =   new SimpleDateFormat("yyyy_MM_dd")
-        customImage = docker.build "philwin/options-ingest-and-api" + ":jbn_${BUILD_NUMBER}_date_${dateFormat.format(date)}"
+        customImage = docker.build "philwin/options-ingest-and-api" + ":${env.BRANCH_NAME}_${BUILD_NUMBER}_date_${dateFormat.format(date)}"
         latestImage = docker.build "philwin/options-ingest-and-api" + ":latest"
     }
     stage ("Publish Docker Image") {
