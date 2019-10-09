@@ -6,7 +6,7 @@ node("docker_slave") {
     def date    =   new Date()
         
     stage("Setting up") {
-        delete()
+        deleteDir()
         checkout scm
         sh "./gradlew build"
     }
