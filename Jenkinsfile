@@ -3,6 +3,7 @@ node("docker_slave") {
     def latestImage
         
     stage("Setting up") {
+        delete()
         checkout scm
         sh "./gradlew build"
     }
