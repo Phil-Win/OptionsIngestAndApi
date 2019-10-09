@@ -1,3 +1,5 @@
+import java.text.SimpleDateFormat
+
 node("docker_slave") {
     def customImage
     def latestImage
@@ -9,8 +11,8 @@ node("docker_slave") {
         sh "./gradlew build"
     }
     stage("Create Docker image") {
-        def dateFormate =   new SimpleDateFormat("yyyy_MM_dd")
-        customImage = docker.build "philwin/options-ingest-and-api" + ":${dateFormat.format(date)}_jenkins_bn_${BUILD_NUMBER}"
+        def dateFormat =   new SimpleDateFormat("yyyy_MM_dd")
+        customImage = docker.build "philwin/options-ingest-and-api" + ":jbn_${BUILD_NUMBER}_date_${dateFormat.format(date)}"
         latestImage = docker.build "philwin/options-ingest-and-api" + ":latest"
     }
     stage ("Publish Docker Image") {
