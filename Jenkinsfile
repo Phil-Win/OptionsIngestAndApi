@@ -1,6 +1,7 @@
 node("docker_slave") {
     def customImage
     def latestImage
+    def date    =   new Date()
         
     stage("Setting up") {
         delete()
@@ -8,7 +9,8 @@ node("docker_slave") {
         sh "./gradlew build"
     }
     stage("Create Docker image") {
-        customImage = docker.build "philwin/options-ingest-and-api" + ":${BUILD_NUMBER}"
+        def dateFormate =   new SimpleDateFormat("yyyy_MM_dd")
+        customImage = docker.build "philwin/options-ingest-and-api" + ":${dateFormat.format(date)}_jenkins_bn_${BUILD_NUMBER}"
         latestImage = docker.build "philwin/options-ingest-and-api" + ":latest"
     }
     stage ("Publish Docker Image") {
