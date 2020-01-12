@@ -24,3 +24,6 @@ Downloads the entire set of the options chain for all symbols mentioned and plac
 Won't reach the 60 calls per minute rate limit of Tradiers Free API
 
 Security is not implemented on this API. If you expose the port, please do so at your own risk
+
+
+*** UPDATE Removed the component to make API call's to this service to make this tool more lightweight

@@ -18,8 +18,8 @@ import java.util.Collections;
 import java.util.List;
 
 @Slf4j
-@RestController
-@RequestMapping("/api/v1")
+//@RestController
+//@RequestMapping("/api/v1")
 public class TradierOptionsAPI {
 
     @Autowired
