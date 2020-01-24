@@ -59,7 +59,7 @@ public class TradierOptionsAutoDownloader {
         listOfStocks    = Arrays.asList(commaSeparatedStockSymbols.split(","));
     }
 
-    @Scheduled(cron = "0 0 17 * * *")
+//    @Scheduled(cron = "0 0 17 * * *")
 //    @Scheduled(fixedRate= 10000000)
     public void downloadStockData() {
         DateFormat dateFormat   =   new SimpleDateFormat("dd_MM_yyyy");
